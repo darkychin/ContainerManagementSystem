@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CMS_DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Agent">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="BOD" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="ContactNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CMSAdminId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="CMSAdmin" Relationship="Self.FK_Agent_ToCMSAdmin" FromRole="Agent" ToRole="CMSAdmin" />
+    <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_ToAgent" FromRole="Agent" ToRole="Customer" />
+  </EntityType>
+  <EntityType Name="Cargo">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Destination" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CustomerId" Type="Int32" Nullable="false" />
+    <Property Name="RegisteredDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Location" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Quantity" Type="Int32" Nullable="false" />
+    <Property Name="ScheduleId" Type="Int32" />
+    <Property Name="TotalWeight" Type="Int32" Nullable="false" />
+    <Property Name="WarehouseId" Type="Int32" />
+    <NavigationProperty Name="Customer" Relationship="Self.FK_Cargo_ToCustomer" FromRole="Cargo" ToRole="Customer" />
+    <NavigationProperty Name="Schedule" Relationship="Self.FK_Cargo_ToSchedule" FromRole="Cargo" ToRole="Schedule" />
+    <NavigationProperty Name="Warehouse" Relationship="Self.FK_Cargo_ToWarehouse" FromRole="Cargo" ToRole="Warehouse" />
+  </EntityType>
+  <EntityType Name="CMSAdmin">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="BOD" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="ContactNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Agents" Relationship="Self.FK_Agent_ToCMSAdmin" FromRole="CMSAdmin" ToRole="Agent" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ContactNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="AgentId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Agent" Relationship="Self.FK_Customer_ToAgent" FromRole="Customer" ToRole="Agent" />
+    <NavigationProperty Name="Cargoes" Relationship="Self.FK_Cargo_ToCustomer" FromRole="Customer" ToRole="Cargo" />
+  </EntityType>
+  <EntityType Name="Schedule">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="DeliveryDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="MaxQuantity" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Cargoes" Relationship="Self.FK_Cargo_ToSchedule" FromRole="Schedule" ToRole="Cargo" />
+  </EntityType>
+  <EntityType Name="Warehouse">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="MaxCapacity" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Cargoes" Relationship="Self.FK_Cargo_ToWarehouse" FromRole="Warehouse" ToRole="Cargo" />
+  </EntityType>
+  <Association Name="FK_Agent_ToCMSAdmin">
+    <End Role="CMSAdmin" Type="Self.CMSAdmin" Multiplicity="1" />
+    <End Role="Agent" Type="Self.Agent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CMSAdmin">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Agent">
+        <PropertyRef Name="CMSAdminId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Customer_ToAgent">
+    <End Role="Agent" Type="Self.Agent" Multiplicity="1" />
+    <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Agent">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Customer">
+        <PropertyRef Name="AgentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Cargo_ToCustomer">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Cargo" Type="Self.Cargo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cargo">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Cargo_ToSchedule">
+    <End Role="Schedule" Type="Self.Schedule" Multiplicity="0..1" />
+    <End Role="Cargo" Type="Self.Cargo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Schedule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cargo">
+        <PropertyRef Name="ScheduleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Cargo_ToWarehouse">
+    <End Role="Warehouse" Type="Self.Warehouse" Multiplicity="0..1" />
+    <End Role="Cargo" Type="Self.Cargo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Warehouse">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cargo">
+        <PropertyRef Name="WarehouseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Agents" EntityType="Self.Agent" />
+    <EntitySet Name="Cargoes" EntityType="Self.Cargo" />
+    <EntitySet Name="CMSAdmins" EntityType="Self.CMSAdmin" />
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="Schedules" EntityType="Self.Schedule" />
+    <EntitySet Name="Warehouses" EntityType="Self.Warehouse" />
+    <AssociationSet Name="FK_Agent_ToCMSAdmin" Association="Self.FK_Agent_ToCMSAdmin">
+      <End Role="CMSAdmin" EntitySet="CMSAdmins" />
+      <End Role="Agent" EntitySet="Agents" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Customer_ToAgent" Association="Self.FK_Customer_ToAgent">
+      <End Role="Agent" EntitySet="Agents" />
+      <End Role="Customer" EntitySet="Customers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Cargo_ToCustomer" Association="Self.FK_Cargo_ToCustomer">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Cargo" EntitySet="Cargoes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Cargo_ToSchedule" Association="Self.FK_Cargo_ToSchedule">
+      <End Role="Schedule" EntitySet="Schedules" />
+      <End Role="Cargo" EntitySet="Cargoes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Cargo_ToWarehouse" Association="Self.FK_Cargo_ToWarehouse">
+      <End Role="Warehouse" EntitySet="Warehouses" />
+      <End Role="Cargo" EntitySet="Cargoes" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

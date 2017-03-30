@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CMS_DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Agent">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Gender" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="BOD" Type="date" Nullable="false" />
+    <Property Name="ContactNo" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="CMSAdminId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Cargo">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Destination" Type="varchar(max)" Nullable="false" />
+    <Property Name="Status" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="CustomerId" Type="int" Nullable="false" />
+    <Property Name="RegisteredDate" Type="date" Nullable="false" />
+    <Property Name="Location" Type="varchar(max)" />
+    <Property Name="Quantity" Type="int" Nullable="false" />
+    <Property Name="ScheduleId" Type="int" />
+    <Property Name="TotalWeight" Type="int" Nullable="false" />
+    <Property Name="WarehouseId" Type="int" />
+  </EntityType>
+  <EntityType Name="CMSAdmin">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Gender" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="BOD" Type="date" Nullable="false" />
+    <Property Name="ContactNo" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ContactNo" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Address" Type="varchar(max)" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="AgentId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Schedule">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="DeliveryDate" Type="date" Nullable="false" />
+    <Property Name="MaxQuantity" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Warehouse">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Address" Type="varchar(max)" Nullable="false" />
+    <Property Name="MaxCapacity" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Agent_ToCMSAdmin">
+    <End Role="CMSAdmin" Type="Self.CMSAdmin" Multiplicity="1" />
+    <End Role="Agent" Type="Self.Agent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CMSAdmin">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Agent">
+        <PropertyRef Name="CMSAdminId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Cargo_ToCustomer">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Cargo" Type="Self.Cargo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cargo">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Cargo_ToSchedule">
+    <End Role="Schedule" Type="Self.Schedule" Multiplicity="0..1" />
+    <End Role="Cargo" Type="Self.Cargo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Schedule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cargo">
+        <PropertyRef Name="ScheduleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Cargo_ToWarehouse">
+    <End Role="Warehouse" Type="Self.Warehouse" Multiplicity="0..1" />
+    <End Role="Cargo" Type="Self.Cargo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Warehouse">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Cargo">
+        <PropertyRef Name="WarehouseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Customer_ToAgent">
+    <End Role="Agent" Type="Self.Agent" Multiplicity="1" />
+    <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Agent">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Customer">
+        <PropertyRef Name="AgentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CMS_DatabaseModelStoreContainer">
+    <EntitySet Name="Agent" EntityType="Self.Agent" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Cargo" EntityType="Self.Cargo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CMSAdmin" EntityType="Self.CMSAdmin" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Schedule" EntityType="Self.Schedule" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Warehouse" EntityType="Self.Warehouse" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Agent_ToCMSAdmin" Association="Self.FK_Agent_ToCMSAdmin">
+      <End Role="CMSAdmin" EntitySet="CMSAdmin" />
+      <End Role="Agent" EntitySet="Agent" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Cargo_ToCustomer" Association="Self.FK_Cargo_ToCustomer">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Cargo" EntitySet="Cargo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Cargo_ToSchedule" Association="Self.FK_Cargo_ToSchedule">
+      <End Role="Schedule" EntitySet="Schedule" />
+      <End Role="Cargo" EntitySet="Cargo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Cargo_ToWarehouse" Association="Self.FK_Cargo_ToWarehouse">
+      <End Role="Warehouse" EntitySet="Warehouse" />
+      <End Role="Cargo" EntitySet="Cargo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Customer_ToAgent" Association="Self.FK_Customer_ToAgent">
+      <End Role="Agent" EntitySet="Agent" />
+      <End Role="Customer" EntitySet="Customer" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
